@@ -13,10 +13,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.google.android.gms.ads.AdRequest;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
     private static final String TAG = "TronSnakeGame";
+
+    private AppOpenAd appOpenAd = null;
+    private boolean isShowingAd = false;
+    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294"; // Replace with your actual Ad Unit ID
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +35,9 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
+                loadAd();
             }
         });
-
 
         webView = findViewById(R.id.webView);
         setupWebView();
@@ -58,6 +67,62 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setDomStorageEnabled(true);
 
         webView.loadUrl("file:///android_asset/snake_game.html");
+    }
+
+    public void loadAd() {
+        AppOpenAd.load(this, AD_UNIT_ID, new AdRequest.Builder().build(),
+                AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
+                new AppOpenAd.AppOpenAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(AppOpenAd ad) {
+                        appOpenAd = ad;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError loadAdError) {
+                        // Handle the error
+                        Log.d(TAG, "Ad failed to load: " + loadAdError.getMessage());
+                    }
+                });
+    }
+
+    public void showAdIfAvailable() {
+        if (!isShowingAd && isAdAvailable()) {
+            FullScreenContentCallback fullScreenContentCallback =
+                    new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            appOpenAd = null;
+                            isShowingAd = false;
+                            loadAd();
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            Log.d(TAG, "Ad failed to show: " + adError.getMessage());
+                        }
+
+                        @Override
+                        public void onAdShowedFullScreenContent() {
+                            isShowingAd = true;
+                        }
+                    };
+
+            appOpenAd.setFullScreenContentCallback(fullScreenContentCallback);
+            appOpenAd.show(this);
+        } else {
+            loadAd();
+        }
+    }
+
+    private boolean isAdAvailable() {
+        return appOpenAd != null;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        showAdIfAvailable();
     }
 
     @Override

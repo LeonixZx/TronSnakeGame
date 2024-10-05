@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snake Game by LeonCybr Lab</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1e2430;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .container {
+            text-align: center;
+            position: relative;
+        }
+        .wrapper {
+
+            position: relative;
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .btn {
+            background-color: rgba(255, 255, 255, 0.8);
+            color: #1e2430;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            outline: none;
+        }
+        .btn:hover {
+            background-color: rgba(255, 255, 255, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        #startPauseButton {
+            background-color: rgba(76, 255, 215, 0.8);
+            color: #1e2430;
+        }
+        #startPauseButton:hover {
+            background-color: rgba(76, 255, 215, 1);
+        }
+        #musicToggle {
+            font-size: 24px;
+            padding: 5px 15px;
+        }
+        #canvas {
+            border: 2px solid #34495e;
+            border-radius: 5px;
+            background-image: url('https://t3.ftcdn.net/jpg/04/71/00/20/360_F_471002062_tCBbTqeeMhHgMfCW86mQhdgpETooy3ID.jpg');
+            background-size: cover;
+            background-position: center;
+        }
+        #score, #timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        #author {
+            margin-top: 20px;
+            color: white;
+        }
+        #author h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        #author span {
+            font-size: 14px;
+        }
+        #gameOver, #leaderboard {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(30, 36, 48, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        #playerName {
+            margin: 10px 0;
+            padding: 5px;
+            width: 200px;
+            max-width: 100%;
+        }
+        #submitScore, #closeLeaderboard {
+            background: #4cffd7;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            color: #1e2430;
+            font-weight: bold;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #submitScore:hover, #closeLeaderboard:hover {
+            background: #3de0b8;
+        }
+        #leaderboardList {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0;
+            text-align: left;
+        }
+        #leaderboardList li {
+            margin: 10px 0;
+            padding: 5px;
+            background: rgba(76, 255, 215, 0.1);
+            border-radius: 3px;
+        }
+        #leaderboard h2, #gameOver h2 {
+            color: #4cffd7;
+            margin-top: 0;
+        }
+        #leaderboard {
+            width: 80%;
+            max-width: 500px;
+        }
+        #leaderboard h2 {
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .leaderboard-header {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: rgba(76, 255, 215, 0.2);
+            font-weight: bold;
+            border-radius: 5px 5px 0 0;
+        }
+        .leaderboard-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .leaderboard-row:last-child {
+            border-bottom: none;
+        }
+        .leaderboard-row:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        .leaderboard-cell {
+            flex: 1;
+            text-align: center;
+        }
+
+		.controller {
+			display: flex;
+			justify-content: center;
+			margin-top: 20px;
+		}
+
+		.control-btn {
+			background-color: rgba(255, 255, 255, 0.8);
+			border: none;
+			border-radius: 50%;
+			width: 60px;
+			height: 60px;
+			font-size: 24px;
+			margin: 0 10px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+			outline: none;
+		}
+
+		.control-btn:hover {
+			background-color: rgba(255, 255, 255, 1);
+			transform: translateY(-2px);
+			box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+		}
+
+		.control-btn:active {
+			transform: translateY(0);
+			box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+		}
+    </style>
+</head>
+<body>
+<div class="container noselect">
+    <div class="controls">
+        <button id="startPauseButton" class="btn">Start</button>
+        <div id="score">Score: 00</div>
+        <div id="timer">00:00</div>
+        <button id="musicToggle" class="btn">🔊</button>
+    </div>
+    <div class="wrapper">
+        <div id="canvas">
+            <canvas width="400" height="400"></canvas>
+        </div>
+    </div>
+    <div id="author">
+        <h1>SNAKE</h1>
+        <span>by LeonCybr Lab</span>
+    </div>
+
+    <div class="controller">
+        <button id="leftBtn" class="control-btn">⬅️</button>
+        <button id="downBtn" class="control-btn">⬇️</button>
+        <button id="upBtn" class="control-btn">⬆️</button>
+        <button id="rightBtn" class="control-btn">➡️</button>
+    </div>
+
+
+</div>
+<div id="gameOver">
+    <h2>GAME OVER</h2>
+    <p>Your score: <span id="finalScore"></span></p>
+    <p>Your time: <span id="finalTime"></span></p>
+    <input type="text" id="playerName" placeholder="Enter your name (max 20 chars)" maxlength="20">
+    <button id="submitScore">Submit Score</button>
+</div>
+<div id="leaderboard">
+    <h2>🏆 Leaderboard 🏆</h2>
+    <div class="leaderboard-header">
+        <div class="leaderboard-cell">Rank</div>
+        <div class="leaderboard-cell">Name</div>
+        <div class="leaderboard-cell">Score</div>
+        <div class="leaderboard-cell">Time</div>
+    </div>
+    <ul id="leaderboardList"></ul>
+    <button id="closeLeaderboard">Close</button>
+</div>
+
+<script>
+    let dom_startPauseButton = document.querySelector("#startPauseButton");
+    let dom_score = document.querySelector("#score");
+    let dom_timer = document.querySelector("#timer");
+    let dom_canvas = document.querySelector("canvas");
+    let CTX = dom_canvas.getContext("2d");
+
+    const W = dom_canvas.width;
+    const H = dom_canvas.height;
+
+    let snake,
+        food,
+        currentHue,
+        cells = 20,
+        cellSize,
+        isGameOver = false,
+        tails = [],
+        score = 00,
+        maxScore = window.localStorage.getItem("maxScore") || undefined,
+        particles = [],
+        splashingParticleCount = 20,
+        cellsCount,
+        requestID;
+
+    let isGameStarted = false;
+    let isPaused = false;
+    let startTime;
+    let elapsedTime = 0;
+    let timerInterval;
+
+    let lights = [];
+    const NUM_LIGHTS = 5;
+
+    let meteorSpawnTime = 0;
+    const METEOR_SPAWN_DELAY = 15000; // 15 seconds in milliseconds
+    let meteors = [];
+    let meteorSpawnTimers = []; // Array to keep track of spawn times for each meteor
+    let shouldSpawnMeteors = false;
+
+    let helpers = {
+        Vec: class {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+            }
+            add(v) {
+                this.x += v.x;
+                this.y += v.y;
+                return this;
+            }
+            mult(v) {
+                if (v instanceof helpers.Vec) {
+                    this.x *= v.x;
+                    this.y *= v.y;
+                    return this;
+                } else {
+                    this.x *= v;
+                    this.y *= v;
+                    return this;
+                }
+            }
+        },
+        isCollision(v1, v2) {
+            return v1.x == v2.x && v1.y == v2.y;
+        },
+
+        isCollisionCircle(v1, v2, r1, r2) {
+            const dx = v1.x - v2.x;
+            const dy = v1.y - v2.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            return distance < (r1 + r2);
+        },
+
+        garbageCollector() {
+            for (let i = 0; i < particles.length; i++) {
+                if (particles[i].size <= 0) {
+                    particles.splice(i, 1);
+                }
+            }
+        },
+        drawGrid() {
+            CTX.lineWidth = 1.1;
+            CTX.strokeStyle = "rgba(255, 255, 255, 0.1)";
+            CTX.shadowBlur = 0;
+            for (let i = 1; i < cells; i++) {
+                let f = (W / cells) * i;
+                CTX.beginPath();
+                CTX.moveTo(f, 0);
+                CTX.lineTo(f, H);
+                CTX.stroke();
+                CTX.beginPath();
+                CTX.moveTo(0, f);
+                CTX.lineTo(W, f);
+                CTX.stroke();
+                CTX.closePath();
+            }
+        },
+        randHue() {
+            return ~~(Math.random() * 360);
+        },
+        hsl2rgb(hue, saturation, lightness) {
+            if (hue == undefined) {
+                return [0, 0, 0];
+            }
+            var chroma = (1 - Math.abs(2 * lightness - 1)) * saturation;
+            var huePrime = hue / 60;
+            var secondComponent = chroma * (1 - Math.abs((huePrime % 2) - 1));
+
+            huePrime = ~~huePrime;
+            var red;
+            var green;
+            var blue;
+
+            if (huePrime === 0) {
+                red = chroma;
+                green = secondComponent;
+                blue = 0;
+            } else if (huePrime === 1) {
+                red = secondComponent;
+                green = chroma;
+                blue = 0;
+            } else if (huePrime === 2) {
+                red = 0;
+                green = chroma;
+                blue = secondComponent;
+            } else if (huePrime === 3) {
+                red = 0;
+                green = secondComponent;
+                blue = chroma;
+            } else if (huePrime === 4) {
+                red = secondComponent;
+                green = 0;
+                blue = chroma;
+            } else if (huePrime === 5) {
+                red = chroma;
+                green = 0;
+                blue = secondComponent;
+            }
+
+            var lightnessAdjustment = lightness - chroma / 2;
+            red += lightnessAdjustment;
+            green += lightnessAdjustment;
+            blue += lightnessAdjustment;
+
+            return [
+                Math.round(red * 255),
+                Math.round(green * 255),
+                Math.round(blue * 255)
+            ];
+        },
+        lerp(start, end, t) {
+            return start * (1 - t) + end * t;
+        }
+    };
+
+    let KEY = {
+        ArrowUp: false,
+        ArrowRight: false,
+        ArrowDown: false,
+        ArrowLeft: false,
+        Shift: false,
+        lastPressed: null,
+        setLastPressed(key) {
+            this.lastPressed = key;
+        },
+        resetState() {
+            this.ArrowUp = false;
+            this.ArrowRight = false;
+            this.ArrowDown = false;
+            this.ArrowLeft = false;
+            this.lastPressed = null;
+        },
+        listen() {
+            addEventListener(
+                "keydown",
+                (e) => {
+                    if (e.key === "Shift") {
+                        this.Shift = true;
+                        return;
+                    }
+                    if (!isGameStarted || isPaused) return;
+                    if (e.key === "ArrowUp" && this.lastPressed !== "ArrowDown") this.lastPressed = "ArrowUp";
+                    if (e.key === "ArrowDown" && this.lastPressed !== "ArrowUp") this.lastPressed = "ArrowDown";
+                    if (e.key === "ArrowLeft" && this.lastPressed !== "ArrowRight") this.lastPressed = "ArrowLeft";
+                    if (e.key === "ArrowRight" && this.lastPressed !== "ArrowLeft") this.lastPressed = "ArrowRight";
+                },
+                false
+            );
+
+            addEventListener(
+                "keyup",
+                (e) => {
+                    if (e.key === "Shift") {
+                        this.Shift = false;
+                    }
+                },
+                false
+            );
+        }
+    };
+
+    class Snake {
+        constructor(i, type) {
+            this.pos = new helpers.Vec(W / 2, H / 2);
+            this.dir = new helpers.Vec(0, 0);
+            this.type = type;
+            this.index = i;
+            this.delay = 5;
+            this.size = W / cells;
+            this.color = "white";
+            this.history = [];
+            this.total = 1;
+            this.baseHue = 200;
+            this.eyeSize = this.size / 8;
+            this.tongueLength = this.size / 3;
+            this.tongueOut = false;
+            this.tongueTimer = 0;
+            this.tongueInterval = 10;
+            this.queuedDirection = null;
+            this.baseDelay = 5;
+            this.speedLevel = 0;
+        }
+
+        draw() {
+            if (this.total >= 2) {
+                for (let i = 0; i < this.history.length; i++) {
+                    let { x, y } = this.history[i];
+                    let segmentSize = this.size * (1 - i / (this.history.length * 1.5));
+                    let hue = this.baseHue + i * 2;
+                    CTX.fillStyle = `hsl(${hue}, 100%, 50%)`;
+                    CTX.beginPath();
+                    CTX.arc(x + this.size / 2, y + this.size / 2, segmentSize / 2, 0, 2 * Math.PI);
+                    CTX.fill();
+                }
+            }
+
+            CTX.fillStyle = `hsl(${this.baseHue}, 100%, 50%)`;
+            CTX.shadowBlur = 20;
+            CTX.shadowColor = "rgba(255,255,255,.3)";
+            CTX.beginPath();
+            CTX.arc(this.pos.x + this.size / 2, this.pos.y + this.size / 2, this.size / 2, 0, 2 * Math.PI);
+            CTX.fill();
+
+            CTX.fillStyle = "white";
+            CTX.shadowBlur = 0;
+
+            let leftEyeX, leftEyeY, rightEyeX, rightEyeY;
+            if (this.dir.x === 0 && this.dir.y === 0) {
+                leftEyeX = this.pos.x + this.size * 0.7;
+                leftEyeY = this.pos.y + this.size * 0.3;
+                rightEyeX = this.pos.x + this.size * 0.7;
+                rightEyeY = this.pos.y + this.size * 0.7;
+            } else if (this.dir.x > 0) {
+                leftEyeX = this.pos.x + this.size * 0.7;
+                leftEyeY = this.pos.y + this.size * 0.3;
+                rightEyeX = this.pos.x + this.size * 0.7;
+                rightEyeY = this.pos.y + this.size * 0.7;
+            } else if (this.dir.x < 0) {
+                leftEyeX = this.pos.x + this.size * 0.3;
+                leftEyeY = this.pos.y + this.size * 0.3;
+                rightEyeX = this.pos.x + this.size * 0.3;
+                rightEyeY = this.pos.y + this.size * 0.7;
+            } else if (this.dir.y < 0) {
+                leftEyeX = this.pos.x + this.size * 0.3;
+                leftEyeY = this.pos.y + this.size * 0.3;
+                rightEyeX = this.pos.x + this.size * 0.7;
+                rightEyeY = this.pos.y + this.size * 0.3;
+            } else if (this.dir.y > 0) {
+                leftEyeX = this.pos.x + this.size * 0.3;
+                leftEyeY = this.pos.y + this.size * 0.7;
+                rightEyeX = this.pos.x + this.size * 0.7;
+                rightEyeY = this.pos.y + this.size * 0.7;
+            }
+
+            CTX.beginPath();
+            CTX.arc(leftEyeX, leftEyeY, this.eyeSize, 0, 2 * Math.PI);
+            CTX.arc(rightEyeX, rightEyeY, this.eyeSize, 0, 2 * Math.PI);
+            CTX.fill();
+
+            CTX.fillStyle = "black";
+            CTX.beginPath();
+            CTX.arc(leftEyeX, leftEyeY, this.eyeSize / 2, 0, 2 * Math.PI);
+            CTX.arc(rightEyeX, rightEyeY, this.eyeSize / 2, 0, 2 * Math.PI);
+            CTX.fill();
+
+            if (this.tongueOut) {
+                CTX.strokeStyle = "red";
+                CTX.lineWidth = this.size / 10;
+                CTX.beginPath();
+                if (this.dir.x > 0) {
+                    CTX.moveTo(this.pos.x + this.size, this.pos.y + this.size / 2);
+                    CTX.lineTo(this.pos.x + this.size + this.tongueLength, this.pos.y + this.size / 2);
+                } else if (this.dir.x < 0) {
+                    CTX.moveTo(this.pos.x, this.pos.y + this.size / 2);
+                    CTX.lineTo(this.pos.x - this.tongueLength, this.pos.y + this.size / 2);
+                } else if (this.dir.y < 0) {
+                    CTX.moveTo(this.pos.x + this.size / 2, this.pos.y);
+                    CTX.lineTo(this.pos.x + this.size / 2, this.pos.y - this.tongueLength);
+                } else if (this.dir.y > 0) {
+                    CTX.moveTo(this.pos.x + this.size / 2, this.pos.y + this.size);
+                    CTX.lineTo(this.pos.x + this.size / 2, this.pos.y + this.size + this.tongueLength);
+                }
+                CTX.stroke();
+            }
+        }
+
+        walls() {
+            let { x, y } = this.pos;
+            if (x + cellSize > W) {
+                this.pos.x = 0;
+            }
+            if (y + cellSize > W) {
+                this.pos.y = 0;
+            }
+            if (y < 0) {
+                this.pos.y = H - cellSize;
+            }
+            if (x < 0) {
+                this.pos.x = W - cellSize;
+            }
+        }
+
+        controlls() {
+            let dir = this.size;
+            let newDirection = null;
+
+            if (KEY.lastPressed === "ArrowUp") newDirection = new helpers.Vec(0, -dir);
+            if (KEY.lastPressed === "ArrowDown") newDirection = new helpers.Vec(0, dir);
+            if (KEY.lastPressed === "ArrowLeft") newDirection = new helpers.Vec(-dir, 0);
+            if (KEY.lastPressed === "ArrowRight") newDirection = new helpers.Vec(dir, 0);
+
+            if (newDirection && !this.isOppositeDirection(newDirection)) {
+                this.queuedDirection = newDirection;
+            }
+        }
+
+        isOppositeDirection(newDir) {
+            return (this.dir.x === -newDir.x && this.dir.y === -newDir.y);
+        }
+
+        selfCollision() {
+            for (let i = 1; i < this.history.length; i++) {
+                let p = this.history[i];
+                if (helpers.isCollision(this.pos, p)) {
+                    isGameOver = true;
+                    return;
+                }
+            }
+        }
+
+        move() {
+            if (this.queuedDirection && !this.isOppositeDirection(this.queuedDirection)) {
+                this.dir = this.queuedDirection;
+                this.queuedDirection = null;
+            }
+            this.pos.add(this.dir);
+        }
+
+        update() {
+            this.walls();
+            this.controlls();
+            if (!this.delay--) {
+                if (helpers.isCollision(this.pos, food.pos)) {
+                    incrementScore();
+                    particleSplash();
+                    food.spawn();
+                    this.total++;
+                }
+                this.history.unshift(new helpers.Vec(this.pos.x, this.pos.y));
+                if (this.history.length > this.total) {
+                    this.history.pop();
+                }
+                this.move();
+                this.delay = KEY.Shift ? Math.max(1, this.baseDelay - this.speedLevel - 2) : Math.max(2, this.baseDelay - this.speedLevel);
+                this.selfCollision();
+
+                this.tongueTimer++;
+                if (this.tongueTimer > this.tongueInterval) {
+                    this.tongueOut = !this.tongueOut;
+                    this.tongueTimer = 0;
+                }
+            }
+            this.draw();
+        }
+    }
+
+    class Food {
+        constructor() {
+            this.pos = new helpers.Vec(
+                ~~(Math.random() * cells) * cellSize,
+                ~~(Math.random() * cells) * cellSize
+            );
+            this.color = currentHue = `hsl(${~~(Math.random() * 360)}, 100%, 50%)`;
+            this.size = cellSize;
+        }
+        draw() {
+            let { x, y } = this.pos;
+            CTX.save();
+            CTX.shadowColor = this.color;
+            CTX.shadowBlur = 10;
+            CTX.fillStyle = this.color;
+            CTX.beginPath();
+            CTX.arc(x + this.size / 2, y + this.size / 2, this.size / 2 - 1, 0, 2 * Math.PI);
+            CTX.fill();
+
+            CTX.shadowBlur = 0;
+            CTX.fillStyle = "brown";
+            CTX.fillRect(x + this.size / 2 - 1, y + 2, 2, 5);
+
+            CTX.fillStyle = "green";
+            CTX.beginPath();
+            CTX.ellipse(x + this.size / 2 + 4, y + 4, 4, 3, Math.PI / 4, 0, 2 * Math.PI);
+            CTX.fill();
+
+            CTX.restore();
+        }
+        spawn() {
+            let randX = ~~(Math.random() * cells) * this.size;
+            let randY = ~~(Math.random() * cells) * this.size;
+            for (let path of snake.history) {
+                if (helpers.isCollision(new helpers.Vec(randX, randY), path)) {
+                    return this.spawn();
+                }
+            }
+            this.color = currentHue = `hsl(${helpers.randHue()}, 100%, 50%)`;
+            this.pos = new helpers.Vec(randX, randY);
+        }
+    }
+
+    class Particle {
+        constructor(pos, color, size, vel) {
+            this.pos = pos;
+            this.color = color;
+            this.size = Math.abs(size / 2);
+            this.ttl = 0;
+            this.gravity = -0.1;
+            this.vel = vel;
+        }
+        draw() {
+            let { x, y } = this.pos;
+            CTX.globalAlpha = 1 - (this.ttl / 50);
+            CTX.fillStyle = this.color;
+            CTX.globalCompositeOperation = "source-over";
+            CTX.beginPath();
+            CTX.arc(x, y, this.size, 0, 2 * Math.PI);
+            CTX.fill();
+            CTX.globalAlpha = 1;
+        }
+        update() {
+            this.draw();
+            this.size -= 0.2;
+            this.ttl += 1;
+            this.pos.add(this.vel);
+            this.vel.y -= this.gravity;
+        }
+    }
+
+    class Light {
+        constructor() {
+            this.pos = new helpers.Vec(Math.random() * W, Math.random() * H);
+            this.vel = new helpers.Vec((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2);
+            this.radius = Math.random() * 2 + 1;
+            this.hue = Math.random() * 360;
+        }
+
+        update() {
+            this.pos.add(this.vel);
+            if (this.pos.x < 0 || this.pos.x > W) this.vel.x *= -1;
+            if (this.pos.y < 0 || this.pos.y > H) this.vel.y *= -1;
+        }
+
+        draw() {
+            CTX.beginPath();
+            let gradient = CTX.createRadialGradient(this.pos.x, this.pos.y, 0, this.pos.x, this.pos.y, this.radius * 5);
+            gradient.addColorStop(0, `hsla(${this.hue}, 100%, 50%, 0.3)`);
+            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+            CTX.fillStyle = gradient;
+            CTX.arc(this.pos.x, this.pos.y, this.radius * 5, 0, Math.PI * 2);
+            CTX.fill();
+        }
+    }
+
+    class Meteor {
+        constructor() {
+            this.size = cellSize;
+            this.reset();
+        }
+
+
+        isOutOfBounds() {
+            return this.pos.x < -this.size || this.pos.x > W + this.size ||
+                   this.pos.y < -this.size || this.pos.y > H + this.size;
+        }
+
+
+
+        reset() {
+            const side = Math.floor(Math.random() * 4);
+            switch(side) {
+                case 0: // Top
+                    this.pos = new helpers.Vec(Math.random() * W, 0);
+                    this.vel = new helpers.Vec((Math.random() - 0.5) * 4, Math.random() * 2 + 1);
+                    break;
+                case 1: // Right
+                    this.pos = new helpers.Vec(W, Math.random() * H);
+                    this.vel = new helpers.Vec(-(Math.random() * 2 + 1), (Math.random() - 0.5) * 4);
+                    break;
+                case 2: // Bottom
+                    this.pos = new helpers.Vec(Math.random() * W, H);
+                    this.vel = new helpers.Vec((Math.random() - 0.5) * 4, -(Math.random() * 2 + 1));
+                    break;
+                case 3: // Left
+                    this.pos = new helpers.Vec(0, Math.random() * H);
+                    this.vel = new helpers.Vec(Math.random() * 2 + 1, (Math.random() - 0.5) * 4);
+                    break;
+            }
+            this.hue = Math.random() * 360;
+        }
+
+        update() {
+            this.pos.add(this.vel);
+        }
+
+        draw() {
+            CTX.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+            CTX.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+            CTX.shadowBlur = 10;
+            CTX.beginPath();
+            CTX.arc(this.pos.x + this.size / 2, this.pos.y + this.size / 2, this.size / 2, 0, 2 * Math.PI);
+            CTX.fill();
+
+            CTX.strokeStyle = `hsl(${this.hue}, 100%, 70%)`;
+            CTX.lineWidth = 2;
+            CTX.beginPath();
+            CTX.moveTo(this.pos.x + this.size / 2, this.pos.y + this.size / 2);
+            CTX.lineTo(this.pos.x + this.size / 2 - this.vel.x * 3, this.pos.y + this.size / 2 - this.vel.y * 3);
+            CTX.stroke();
+        }
+
+        checkCollision(snakeHead) {
+            return helpers.isCollisionCircle(
+                this.pos,
+                snakeHead,
+                this.size / 2,
+                cellSize / 2
+            );
+        }
+    }
+
+
+
+
+    // Modified updateMeteors function
+    function updateMeteors() {
+        const currentTime = Date.now();
+
+        meteors = meteors.filter(meteor => {
+            meteor.update();
+            if (meteor.checkCollision(snake.pos)) {
+                isGameOver = true;
+            }
+            return !meteor.isOutOfBounds();
+        });
+
+        // Check each meteor spawn timer
+        meteorSpawnTimers.forEach((spawnTime, index) => {
+            if (currentTime - spawnTime >= METEOR_SPAWN_DELAY) {
+                spawnMeteor();
+                meteorSpawnTimers[index] = currentTime; // Reset the timer
+            }
+        });
+    }
+
+
+    // Modified incrementScore function
+    function incrementScore() {
+        score++;
+        dom_score.innerText = `Score: ${score.toString().padStart(2, "0")}`;
+
+        // Increase speed every 25 points
+        if (score % 10 === 0) {
+            snake.speedLevel++;
+        }
+
+        // Spawn first meteor at 9 points
+        if (score === 3 && meteorSpawnTimers.length === 0) {
+            shouldSpawnMeteors = true;
+            meteorSpawnTimers.push(Date.now());
+        }
+
+        // Add new meteor timer every 50 points starting from 50
+        if (score >= 5 && score % 5 === 0) {
+            meteorSpawnTimers.push(Date.now());
+        }
+
+        if (isMusicOn) {
+            let eatSound = new Audio('https://od.lk/d/NDBfMTA3MzU2NTI2Xw/ding.mp3');
+            eatSound.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }
+
+    function particleSplash() {
+        for (let i = 0; i < splashingParticleCount; i++) {
+            let vel = new helpers.Vec(Math.random() * 6 - 3, Math.random() * 6 - 3);
+            let position = new helpers.Vec(food.pos.x, food.pos.y);
+            particles.push(new Particle(position, currentHue, food.size, vel));
+        }
+    }
+
+    function clear() {
+        CTX.clearRect(0, 0, W, H);
+    }
+
+    function initialize() {
+        CTX.imageSmoothingEnabled = false;
+        KEY.listen();
+        cellsCount = cells * cells;
+        cellSize = W / cells;
+        snake = new Snake();
+        food = new Food();
+        dom_startPauseButton.addEventListener("click", toggleStartPause, false);
+        document.getElementById('submitScore').addEventListener('click', submitScore);
+        document.getElementById('closeLeaderboard').addEventListener('click', closeLeaderboard);
+        document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+        for (let i = 0; i < NUM_LIGHTS; i++) {
+            lights.push(new Light());
+        }
+        meteors = [];
+        meteorCount = 0;
+        shouldSpawnMeteors = false;
+        drawInitialState();
+
+        // Add the new code here
+        document.getElementById('leftBtn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            KEY.lastPressed = "ArrowLeft";
+        });
+        document.getElementById('rightBtn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            KEY.lastPressed = "ArrowRight";
+        });
+        document.getElementById('upBtn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            KEY.lastPressed = "ArrowUp";
+        });
+        document.getElementById('downBtn').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            KEY.lastPressed = "ArrowDown";
+        });
+        // Prevent holding buttons
+        document.querySelectorAll('.control-btn').forEach(btn => {
+            btn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                KEY.lastPressed = null;
+            });
+        });
+
+
+
+
+                    // Add this new code at the end of the initialize() function
+        ['leftBtn', 'rightBtn', 'upBtn', 'downBtn'].forEach(btnId => {
+            const btn = document.getElementById(btnId);
+            const direction = btnId.replace('Btn', '');
+            const arrowDirection = 'Arrow' + direction.charAt(0).toUpperCase() + direction.slice(1);
+
+            function handleDirectionChange(e) {
+                e.preventDefault();
+                if (!isGameStarted || isPaused) return;
+                KEY.lastPressed = arrowDirection;
+            }
+
+            btn.addEventListener('mousedown', handleDirectionChange);
+            btn.addEventListener('touchstart', handleDirectionChange);
+
+            btn.addEventListener('mouseup', function(e) {
+                e.preventDefault();
+                KEY.lastPressed = null;
+            });
+            btn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                KEY.lastPressed = null;
+            });
+        });
+    }
+
+
+    function toggleStartPause() {
+        if (!isGameStarted) {
+            startGame();
+        } else {
+            togglePause();
+        }
+    }
+
+    function startGame() {
+        isGameStarted = true;
+        isPaused = false;
+        dom_startPauseButton.innerHTML = 'Pause';
+        reset();
+        startBackgroundMusic();
+        startTimer();
+        loop();
+    }
+
+    function togglePause() {
+        isPaused = !isPaused;
+        if (isPaused) {
+            dom_startPauseButton.innerHTML = 'Resume';
+            stopBackgroundMusic();
+            pauseTimer();
+        } else {
+            dom_startPauseButton.innerHTML = 'Pause';
+            startBackgroundMusic();
+            resumeTimer();
+            loop();
+        }
+    }
+
+    function drawInitialState() {
+        clear();
+        helpers.drawGrid();
+        snake.draw();
+        food.draw();
+        for (let light of lights) {
+            light.draw();
+        }
+    }
+
+
+    function spawnMeteor() {
+        meteors.push(new Meteor());
+    }
+
+    // Keep only one updateMeteorCount function
+    function updateMeteorCount() {
+        if (score >= 9) {
+            meteorCount = Math.floor((score - 9) / 9) * 2 + 1;
+        } else {
+            meteorCount = 0;
+        }
+    }
+
+    // Modified drawMeteors function
+    function drawMeteors() {
+        meteors.forEach(meteor => meteor.draw());
+    }
+
+
+    function loop() {
+        clear();
+        if (!isGameOver && !isPaused) {
+            requestID = setTimeout(loop, 1000 / 60);
+            helpers.drawGrid();
+            for (let light of lights) {
+                light.update();
+                light.draw();
+            }
+            food.draw();
+            for (let p of particles) {
+                p.update();
+            }
+            snake.update();
+            if (shouldSpawnMeteors) {
+                updateMeteors();
+                drawMeteors();
+            }
+            particles = particles.filter(p => p.size > 0.1);
+        } else if (isGameOver) {
+            clear();
+            gameOver();
+        }
+    }
+
+
+    let backgroundMusic = new Audio('https://www.chosic.com/wp-content/uploads/2020/07/maxkomusic-heroism(chosic.com).mp3');
+    backgroundMusic.loop = true;
+    let isMusicOn = true;
+
+    function toggleMusic() {
+        isMusicOn = !isMusicOn;
+        if (isMusicOn) {
+            startBackgroundMusic();
+            document.getElementById('musicToggle').textContent = '🔊';
+        } else {
+            stopBackgroundMusic();
+            document.getElementById('musicToggle').textContent = '🔇';
+        }
+    }
+
+    function startBackgroundMusic() {
+        if (isMusicOn && isGameStarted && !isPaused) {
+            backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
+        }
+    }
+
+    function stopBackgroundMusic() {
+        backgroundMusic.pause();
+    }
+
+    let leaderboard = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
+
+    function showGameOver() {
+        document.getElementById('gameOver').style.display = 'block';
+        document.getElementById('finalScore').textContent = score;
+        document.getElementById('finalTime').textContent = formatTime(elapsedTime);
+    }
+
+    function submitScore() {
+        let playerName = document.getElementById('playerName').value.trim() || 'Anonymous';
+        playerName = playerName.substring(0, 20);
+        leaderboard.push({name: playerName, score: score, time: elapsedTime});
+        leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
+        leaderboard = leaderboard.slice(0, 10);
+        localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
+        showLeaderboard();
+    }
+
+    function showLeaderboard() {
+        let leaderboardList = document.getElementById('leaderboardList');
+        leaderboardList.innerHTML = '';
+        leaderboard.forEach((entry, index) => {
+            let row = document.createElement('div');
+            row.className = 'leaderboard-row';
+
+            row.innerHTML =
+                '<div class="leaderboard-cell">' + (index + 1) + '.</div>' +
+                '<div class="leaderboard-cell">' + entry.name + '</div>' +
+                '<div class="leaderboard-cell">' + entry.score + '</div>' +
+                '<div class="leaderboard-cell">' + formatTime(entry.time) + '</div>';
+            leaderboardList.appendChild(row);
+        });
+        document.getElementById('gameOver').style.display = 'none';
+        document.getElementById('leaderboard').style.display = 'block';
+    }
+
+    function closeLeaderboard() {
+        document.getElementById('leaderboard').style.display = 'none';
+        reset();
+        drawInitialState();
+        dom_startPauseButton.innerHTML = 'Start';
+    }
+
+    // Modified reset function
+    function reset() {
+        score = 0;
+        dom_score.innerText = `Score: 00`;
+        snake = new Snake();
+        food.spawn();
+        KEY.resetState();
+        isGameOver = false;
+        clearTimeout(requestID);
+        resetTimer();
+        lights = [];
+        for (let i = 0; i < NUM_LIGHTS; i++) {
+            lights.push(new Light());
+        }
+        snake.speedLevel = 0;
+        meteors = [];
+        meteorSpawnTimers = [];
+        shouldSpawnMeteors = false;
+    }
+
+    function gameOver() {
+        maxScore ? null : (maxScore = score);
+        score > maxScore ? (maxScore = score) : null;
+        window.localStorage.setItem("maxScore", maxScore);
+        stopBackgroundMusic();
+        stopTimer();
+        isGameStarted = false;
+        dom_startPauseButton.innerHTML = 'Start';
+        showGameOver();
+    }
+
+    function startTimer() {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function pauseTimer() {
+        clearInterval(timerInterval);
+    }
+
+    function resumeTimer() {
+        startTime = Date.now() - elapsedTime;
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function stopTimer() {
+        clearInterval(timerInterval);
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        elapsedTime = 0;
+        updateTimerDisplay();
+    }
+
+    function updateTimer() {
+        elapsedTime = Date.now() - startTime;
+        updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+        dom_timer.textContent = formatTime(elapsedTime);
+    }
+
+    function formatTime(ms) {
+        let seconds = Math.floor(ms / 1000);
+        let minutes = Math.floor(seconds / 60);
+        seconds = seconds % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    // Initialize the game when the window loads
+    window.addEventListener('load', function() {
+        console.log("HTML file loaded");
+        console.log("Initializing game...");
+        initialize();
+        console.log("Game initialized");
+    });
+
+</script>
+</body>
+</html>

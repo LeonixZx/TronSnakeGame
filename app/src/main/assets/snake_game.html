@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Snake Game by LeonCybr Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         * {
             box-sizing: border-box;
@@ -11,22 +13,78 @@
             padding: 0;
         }
 
+        @keyframes glowingEffect {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 0.7; }
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
         html, body {
             height: 100%;
+            margin: 0;
+            padding: 0;
             overflow: hidden;
         }
 
         body {
             margin: 0;
             padding: 0;
-            background-color: #1e2430;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif, 'Orbitron';
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
             overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('background_interface.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            z-index: -2;
+        }
+
+        body::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg,
+                        rgba(26, 26, 46, 0.5),
+                        rgba(22, 33, 62, 0.5),
+                        rgba(15, 52, 96, 0.5),
+                        rgba(37, 40, 80, 0.5));
+            background-size: 400% 400%;
+            animation: glowingEffect 8s ease infinite;
+            z-index: -1;
+        }
+
+         .sparkle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            border-radius: 50%;
+            background-color: white;
+            box-shadow: 0 0 10px 1px white;
+            animation: sparkle 1.5s infinite;
+            pointer-events: none;
+            z-index: 1;
         }
 
         .container {
@@ -37,13 +95,32 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
+
+            background-color: rgba(30, 36, 48, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px auto;
         }
 
         #author {
-            margin-bottom: 20px;
-            color: white;
-            text-align: center;
+          text-align: center;
+          margin: 20px 0;
         }
+
+        .snake-title {
+          font-family: 'Orbitron', sans-serif;
+          font-size: 48px;
+          color: #ffffff;
+          margin: 0;
+          text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+        }
+
+        .author-name {
+          font-family: 'Orbitron', sans-serif;
+          font-size: 18px;
+          color: #a0a0a0;
+        }
+
 
         #author h1 {
             font-size: 4vh;
@@ -55,30 +132,33 @@
         }
 
         .controls {
-            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
         }
 
         .btn {
-            background-color: rgba(255, 255, 255, 0.8);
-            color: #1e2430;
+            background-color: #5cffe7;
+            color: #000000;
             border: none;
             padding: 10px 20px;
             border-radius: 20px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            outline: none;
+            font-family: 'Orbitron', sans-serif;
+            box-shadow: 0 0 10px rgba(92, 255, 231, 0.7);
         }
 
+
         .btn:hover {
-            background-color: rgba(255, 255, 255, 1);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            background-color: #00ffff;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.9);
         }
 
         #startPauseButton {
@@ -91,11 +171,13 @@
         }
 
         #musicToggle {
-            font-size: 24px;
-            padding: 5px 15px;
+            background-color: #808080;
+            color: #ffffff;
+            font-size: 20px;
+            padding: 5px 10px;
         }
 
-          #canvas {
+        #canvas {
             width: 100%;
             aspect-ratio: 1 / 1;
             max-width: 400px;
@@ -108,11 +190,30 @@
             position: relative;
         }
 
+        .game-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 20px;
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+
+
         #score, #timer {
+            font-family: 'Orbitron', sans-serif;
             font-size: 18px;
+            color: #5cffe7;
             font-weight: bold;
-            color: white;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-shadow: 0 0 10px rgba(92, 255, 231, 0.7);
         }
 
         .controller {
@@ -298,6 +399,24 @@
                 height: 120px;
             }
 
+            .header {
+              background-color: #4353b2;
+              padding: 10px 0;
+              text-align: center;
+              box-shadow: 0 2px 10px rgba(67, 83, 178, 0.7);
+            }
+
+            .game-title {
+              font-family: 'Orbitron', sans-serif;
+              font-size: 24px;
+              color: #ffffff;
+              text-transform: uppercase;
+              letter-spacing: 2px;
+              margin: 0;
+              text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
+            }
+
+
             .control-btn {
                 width: 30px;
                 height: 30px;
@@ -309,17 +428,21 @@
 <body>
 <div class="container noselect">
     <div id="author">
-        <h1>SNAKE</h1>
-        <span>by LeonCybr Lab</span>
+        <h2 class="snake-title">Tron Snake</h2>
+        <span class="author-name">by LeonCybr Lab</span>
     </div>
-    <div class="controls">
-        <button id="startPauseButton" class="btn">Start</button>
-        <div id="score">Score: 00</div>
-        <div id="timer">00:00</div>
-        <button id="musicToggle" class="btn">🔊</button>
-    </div>
-    <div id="canvas">
-        <canvas></canvas>
+    <div class="game-container">
+        <div class="game-info">
+            <div id="score">Score: 00</div>
+            <div id="timer">00:00</div>
+        </div>
+        <div id="canvas">
+            <canvas></canvas>
+        </div>
+        <div class="controls">
+            <button id="startPauseButton" class="btn">Start</button>
+            <button id="musicToggle" class="btn">🔊</button>
+        </div>
     </div>
 
     <div class="controller">
@@ -415,7 +538,7 @@
             }
         },
         isCollision(v1, v2) {
-            return v1.x == v2.x && v1.y == v2.y;
+            return Math.abs(v1.x - v2.x) < cellSize / 2 && Math.abs(v1.y - v2.y) < cellSize / 2;
         },
         isCollisionCircle(v1, v2, r1, r2) {
             const dx = v1.x - v2.x;
@@ -662,7 +785,7 @@
             if (x + cellSize > W) {
                 this.pos.x = 0;
             }
-            if (y + cellSize > W) {
+            if (y + cellSize > H) {  // Changed from W to H
                 this.pos.y = 0;
             }
             if (y < 0) {
@@ -700,14 +823,12 @@
                 this.dir = this.queuedDirection;
                 this.queuedDirection = null;
             }
-            let newPos = new helpers.Vec(
-                this.pos.x + this.dir.x,
-                this.pos.y + this.dir.y
-            );
-            // Snap to grid
-            newPos.x = Math.round(newPos.x / cellSize) * cellSize;
-            newPos.y = Math.round(newPos.y / cellSize) * cellSize;
-            this.pos = newPos;
+            this.pos.x += this.dir.x;
+            this.pos.y += this.dir.y;
+
+            // Ensure the snake stays on the grid
+            this.pos.x = Math.round(this.pos.x / cellSize) * cellSize;
+            this.pos.y = Math.round(this.pos.y / cellSize) * cellSize;
         }
 
         update() {
@@ -720,11 +841,11 @@
                     food.spawn();
                     this.total++;
                 }
+                this.move();
                 this.history.unshift(new helpers.Vec(this.pos.x, this.pos.y));
                 if (this.history.length > this.total) {
                     this.history.pop();
                 }
-                this.move();
                 this.delay = KEY.Shift ? Math.max(1, this.baseDelay - this.speedLevel - 2) : Math.max(2, this.baseDelay - this.speedLevel);
                 this.selfCollision();
 
@@ -771,6 +892,11 @@
         spawn() {
             let randX = Math.floor(Math.random() * cells) * cellSize;
             let randY = Math.floor(Math.random() * cells) * cellSize;
+
+            // Ensure food doesn't spawn outside the playable area
+            randX = Math.min(randX, W - cellSize);
+            randY = Math.min(randY, H - cellSize);
+
             for (let path of snake.history) {
                 if (helpers.isCollision(new helpers.Vec(randX, randY), path)) {
                     return this.spawn();
@@ -975,11 +1101,23 @@
         let activeButton = null;
 
         function getButtonFromPoint(x, y) {
-            const element = document.elementFromPoint(x, y);
-            return element.closest('.control-btn');
+            const buttons = document.querySelectorAll('.control-btn');
+            const padding = cellSize; // Increase this value to make the touch area larger
+
+            for (let button of buttons) {
+                const rect = button.getBoundingClientRect();
+                if (x >= rect.left - padding && x <= rect.right + padding &&
+                    y >= rect.top - padding && y <= rect.bottom + padding) {
+                    return button;
+                }
+            }
+            return null;
         }
 
-        function updateDirection(e) {
+        function handleTouch(e) {
+            e.preventDefault();
+            if (!isGameStarted || isPaused) return;
+
             const touch = e.touches[0];
             const button = getButtonFromPoint(touch.clientX, touch.clientY);
 
@@ -993,21 +1131,12 @@
             } else if (!button && activeButton) {
                 activeButton.classList.remove('active');
                 activeButton = null;
-                KEY.setLastPressed(null);
+                KEY.resetState();
             }
         }
 
-        controlArea.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            if (!isGameStarted || isPaused) return;
-            updateDirection(e);
-        }, { passive: false });
-
-        controlArea.addEventListener('touchmove', function(e) {
-            e.preventDefault();
-            if (!isGameStarted || isPaused) return;
-            updateDirection(e);
-        }, { passive: false });
+        controlArea.addEventListener('touchstart', handleTouch, { passive: false });
+        controlArea.addEventListener('touchmove', handleTouch, { passive: false });
 
         controlArea.addEventListener('touchend', function(e) {
             e.preventDefault();
@@ -1015,11 +1144,7 @@
                 activeButton.classList.remove('active');
             }
             activeButton = null;
-            KEY.setLastPressed(null);
-        }, { passive: false });
-
-        controlArea.addEventListener('touchmove', function(e) {
-            e.preventDefault();
+            KEY.resetState();
         }, { passive: false });
 
         document.addEventListener('keydown', function(e) {
@@ -1262,16 +1387,42 @@
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     }
 
+
+    function createSparkles() {
+        const sparkleContainer = document.createElement('div');
+        sparkleContainer.className = 'sparkle-container';
+        sparkleContainer.style.position = 'fixed';
+        sparkleContainer.style.top = '0';
+        sparkleContainer.style.left = '0';
+        sparkleContainer.style.width = '100%';
+        sparkleContainer.style.height = '100%';
+        sparkleContainer.style.overflow = 'hidden';
+        sparkleContainer.style.pointerEvents = 'none';
+        sparkleContainer.style.zIndex = '0';
+        document.body.appendChild(sparkleContainer);
+
+        const sparkleCount = 25;  // Adjust this number for more or fewer sparkles
+
+        for (let i = 0; i < sparkleCount; i++) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.left = `${Math.random() * 100}%`;
+            sparkle.style.top = `${Math.random() * 100}%`;
+            sparkle.style.animationDelay = `${Math.random() * 2}s`;
+            sparkleContainer.appendChild(sparkle);
+        }
+    }
+
     function resizeCanvas() {
         const canvas = document.querySelector('canvas');
         const container = document.getElementById('canvas');
         const containerWidth = container.clientWidth;
         const containerHeight = container.clientHeight;
 
-        W = canvas.width = containerWidth;
-        H = canvas.height = containerHeight;
+        cellSize = Math.floor(Math.min(containerWidth, containerHeight) / cells);
 
-        cellSize = Math.min(W, H) / cells;
+        W = canvas.width = cells * cellSize;
+        H = canvas.height = cells * cellSize;
 
         // Reinitialize game objects if necessary
         if (snake) {
@@ -1291,11 +1442,14 @@
         }
     }
 
-    // Call resizeCanvas on window resize and on initial load
+    // Call resizeCanvas on window resize
     window.addEventListener('resize', resizeCanvas);
+
+    // Call resizeCanvas and createSparkles on initial load
     window.addEventListener('load', () => {
         resizeCanvas();
         initialize();
+        createSparkles();
     });
 </script>
 </body>

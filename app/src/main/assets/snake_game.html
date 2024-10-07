@@ -75,7 +75,7 @@
             z-index: -1;
         }
 
-         .sparkle {
+        .sparkle {
             position: absolute;
             width: 3px;
             height: 3px;
@@ -95,7 +95,6 @@
             align-items: center;
             padding: 20px;
             box-sizing: border-box;
-
             background-color: rgba(30, 36, 48, 0.7);
             padding: 20px;
             border-radius: 10px;
@@ -103,32 +102,22 @@
         }
 
         #author {
-          text-align: center;
-          margin: 20px 0;
+            text-align: center;
+            margin: 20px 0;
         }
 
         .snake-title {
-          font-family: 'Orbitron', sans-serif;
-          font-size: 48px;
-          color: #ffffff;
-          margin: 0;
-          text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 48px;
+            color: #ffffff;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.9);
         }
 
         .author-name {
-          font-family: 'Orbitron', sans-serif;
-          font-size: 18px;
-          color: #a0a0a0;
-        }
-
-
-        #author h1 {
-            font-size: 4vh;
-            margin-bottom: 0.5vh;
-        }
-
-        #author span {
-            font-size: 2vh;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 18px;
+            color: #a0a0a0;
         }
 
         .controls {
@@ -154,7 +143,6 @@
             font-family: 'Orbitron', sans-serif;
             box-shadow: 0 0 10px rgba(92, 255, 231, 0.7);
         }
-
 
         .btn:hover {
             background-color: #00ffff;
@@ -207,7 +195,6 @@
             background-color: rgba(0, 0, 0, 0.7);
         }
 
-
         #score, #timer {
             font-family: 'Orbitron', sans-serif;
             font-size: 18px;
@@ -218,78 +205,90 @@
 
         .controller {
             position: absolute;
-            bottom: 20px;
+            bottom: 5vh;
             left: 50%;
             transform: translateX(-50%);
-            width: 150px;
-            height: 150px;
-            z-index: 10;
+            z-index: 1000;
+        }
+
+        .controller-handle {
+            position: absolute;
+            top: -20px;
+            left: -20px;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            cursor: move;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .controller-handle::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white"><path d="M7 10l5-5 5 5M7 14l5 5 5-5"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.7;
         }
 
         .control-area {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr;
+            gap: 5%;
             width: 100%;
             height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
             background-color: rgba(255, 255, 255, 0.2);
             border-radius: 50%;
-            padding: 10px;
+            padding: 5%;
             box-sizing: border-box;
         }
 
-        @media (max-height: 700px) {
-            .controller {
-                bottom: 10px;
-                width: 120px;
-                height: 120px;
-            }
-        }
-
-
-        .horizontal-buttons {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
-        .center-dot {
-            width: 10px;
-            height: 10px;
-            background-color: #fff;
-            border-radius: 50%;
-        }
+        #upBtn { grid-area: 1 / 2 / 2 / 3; }
+        #leftBtn { grid-area: 2 / 1 / 3 / 2; }
+        #rightBtn { grid-area: 2 / 3 / 3 / 4; }
+        #downBtn { grid-area: 3 / 2 / 4 / 3; }
 
         .control-btn {
             background-color: rgba(255, 255, 255, 0.8);
             border: none;
             border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 100%;
+            height: 0;
+            padding-bottom: 100%;
+            position: relative;
+            font-size: 0;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             outline: none;
         }
 
-        .control-btn:hover {
-            background-color: rgba(255, 255, 255, 1);
-            transform: scale(1.1);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        .control-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%;
+            height: 50%;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            font-size: 24px;
         }
 
-        .control-btn:active {
-            transform: scale(1);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
+        #upBtn::after { content: '⬆️'; }
+        #downBtn::after { content: '⬇️'; }
+        #leftBtn::after { content: '⬅️'; }
+        #rightBtn::after { content: '➡️'; }
 
-        .control-btn.active {
+        .control-btn:hover, .control-btn:active, .control-btn.active {
             background-color: rgba(76, 255, 215, 1);
             transform: scale(1.1);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
@@ -376,8 +375,13 @@
         }
 
         @media (max-width: 600px) {
-            .container {
-                padding: 10px;
+            .controller {
+                width: 35vmin;
+                height: 35vmin;
+            }
+
+            .control-btn::after {
+                font-size: 5vmin;
             }
 
             .controls {
@@ -392,35 +396,6 @@
             #canvas {
                 max-width: 90vw;
                 max-height: 90vw;
-            }
-
-            .controller {
-                width: 120px;
-                height: 120px;
-            }
-
-            .header {
-              background-color: #4353b2;
-              padding: 10px 0;
-              text-align: center;
-              box-shadow: 0 2px 10px rgba(67, 83, 178, 0.7);
-            }
-
-            .game-title {
-              font-family: 'Orbitron', sans-serif;
-              font-size: 24px;
-              color: #ffffff;
-              text-transform: uppercase;
-              letter-spacing: 2px;
-              margin: 0;
-              text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
-            }
-
-
-            .control-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 16px;
             }
         }
     </style>
@@ -447,13 +422,10 @@
 
     <div class="controller">
         <div id="controlArea" class="control-area">
-            <button id="upBtn" class="control-btn" data-direction="ArrowUp">⬆️</button>
-            <div class="horizontal-buttons">
-                <button id="leftBtn" class="control-btn" data-direction="ArrowLeft">⬅️</button>
-                <div class="center-dot"></div>
-                <button id="rightBtn" class="control-btn" data-direction="ArrowRight">➡️</button>
-            </div>
-            <button id="downBtn" class="control-btn" data-direction="ArrowDown">⬇️</button>
+            <button id="upBtn" class="control-btn" data-direction="ArrowUp"></button>
+            <button id="leftBtn" class="control-btn" data-direction="ArrowLeft"></button>
+            <button id="rightBtn" class="control-btn" data-direction="ArrowRight"></button>
+            <button id="downBtn" class="control-btn" data-direction="ArrowDown"></button>
         </div>
     </div>
 </div>
@@ -846,611 +818,710 @@
                 if (this.history.length > this.total) {
                     this.history.pop();
                 }
-                this.delay = KEY.Shift ? Math.max(1, this.baseDelay - this.speedLevel - 2) : Math.max(2, this.baseDelay - this.speedLevel);
-                this.selfCollision();
+                this.delay = KEY.Shift ? Math.max(1, this.baseDelay - this.speedLevel - 2): Math.max(2, this.baseDelay - this.speedLevel);
+            this.selfCollision();
 
-                this.tongueTimer++;
-                if (this.tongueTimer > this.tongueInterval) {
-                    this.tongueOut = !this.tongueOut;
-                    this.tongueTimer = 0;
-                }
-            }
-            this.draw();
-        }
-    }
-
-    class Food {
-        constructor() {
-            this.pos = new helpers.Vec(
-                ~~(Math.random() * cells) * cellSize,
-                ~~(Math.random() * cells) * cellSize
-            );
-            this.color = currentHue = `hsl(${~~(Math.random() * 360)}, 100%, 50%)`;
-            this.size = cellSize;
-        }
-        draw() {
-            let { x, y } = this.pos;
-            CTX.save();
-            CTX.shadowColor = this.color;
-            CTX.shadowBlur = 10;
-            CTX.fillStyle = this.color;
-            CTX.beginPath();
-            CTX.arc(x + this.size / 2, y + this.size / 2, this.size / 2 - 1, 0, 2 * Math.PI);
-            CTX.fill();
-
-            CTX.shadowBlur = 0;
-            CTX.fillStyle = "brown";
-            CTX.fillRect(x + this.size / 2 - 1, y + 2, 2, 5);
-
-            CTX.fillStyle = "green";
-            CTX.beginPath();
-            CTX.ellipse(x + this.size / 2 + 4, y + 4, 4, 3, Math.PI / 4, 0, 2 * Math.PI);
-            CTX.fill();
-
-            CTX.restore();
-        }
-        spawn() {
-            let randX = Math.floor(Math.random() * cells) * cellSize;
-            let randY = Math.floor(Math.random() * cells) * cellSize;
-
-            // Ensure food doesn't spawn outside the playable area
-            randX = Math.min(randX, W - cellSize);
-            randY = Math.min(randY, H - cellSize);
-
-            for (let path of snake.history) {
-                if (helpers.isCollision(new helpers.Vec(randX, randY), path)) {
-                    return this.spawn();
-                }
-            }
-            this.color = currentHue = `hsl(${helpers.randHue()}, 100%, 50%)`;
-            this.pos = new helpers.Vec(randX, randY);
-        }
-    }
-
-    class Particle {
-        constructor(pos, color, size, vel) {
-            this.pos = pos;
-            this.color = color;
-            this.size = Math.abs(size / 2);
-            this.ttl = 0;
-            this.gravity = -0.1;
-            this.vel = vel;
-        }
-        draw() {
-            let { x, y } = this.pos;
-            CTX.globalAlpha = 1 - (this.ttl / 50);
-            CTX.fillStyle = this.color;
-            CTX.globalCompositeOperation = "source-over";
-            CTX.beginPath();
-            CTX.arc(x, y, this.size, 0, 2 * Math.PI);
-            CTX.fill();
-            CTX.globalAlpha = 1;
-        }
-        update() {
-            this.draw();
-            this.size -= 0.2;
-            this.ttl += 1;
-            this.pos.add(this.vel);
-            this.vel.y -= this.gravity;
-        }
-    }
-
-    class Light {
-        constructor() {
-            this.pos = new helpers.Vec(Math.random() * W, Math.random() * H);
-            this.vel = new helpers.Vec((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2);
-            this.radius = Math.random() * 2 + 1;
-            this.hue = Math.random() * 360;
-        }
-
-        update() {
-            this.pos.add(this.vel);
-            if (this.pos.x < 0 || this.pos.x > W) this.vel.x *= -1;
-            if (this.pos.y < 0 || this.pos.y > H) this.vel.y *= -1;
-        }
-
-        draw() {
-            CTX.beginPath();
-            let gradient = CTX.createRadialGradient(this.pos.x, this.pos.y, 0, this.pos.x, this.pos.y, this.radius * 5);
-            gradient.addColorStop(0, `hsla(${this.hue}, 100%, 50%, 0.3)`);
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-            CTX.fillStyle = gradient;
-            CTX.arc(this.pos.x, this.pos.y, this.radius * 5, 0, Math.PI * 2);
-            CTX.fill();
-        }
-    }
-
-    class Meteor {
-        constructor() {
-            this.size = cellSize;
-            this.reset();
-        }
-
-        isOutOfBounds() {
-            return this.pos.x < -this.size || this.pos.x > W + this.size ||
-                   this.pos.y < -this.size || this.pos.y > H + this.size;
-        }
-
-        reset() {
-            const side = Math.floor(Math.random() * 4);
-            switch(side) {
-                case 0: // Top
-                    this.pos = new helpers.Vec(Math.random() * W, 0);
-                    this.vel = new helpers.Vec((Math.random() - 0.5) * 4, Math.random() * 2 + 1);
-                    break;
-                case 1: // Right
-                    this.pos = new helpers.Vec(W, Math.random() * H);
-                    this.vel = new helpers.Vec(-(Math.random() * 2 + 1), (Math.random() - 0.5) * 4);
-                    break;
-                case 2: // Bottom
-                    this.pos = new helpers.Vec(Math.random() * W, H);
-                    this.vel = new helpers.Vec((Math.random() - 0.5) * 4, -(Math.random() * 2 + 1));
-                    break;
-                case 3: // Left
-                    this.pos = new helpers.Vec(0, Math.random() * H);
-                    this.vel = new helpers.Vec(Math.random() * 2 + 1, (Math.random() - 0.5) * 4);
-                    break;
-            }
-            this.hue = Math.random() * 360;
-        }
-
-        update() {
-            this.pos.add(this.vel);
-        }
-
-        draw() {
-            CTX.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
-            CTX.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
-            CTX.shadowBlur = 10;
-            CTX.beginPath();
-            CTX.arc(this.pos.x + this.size / 2, this.pos.y + this.size / 2, this.size / 2, 0, 2 * Math.PI);
-            CTX.fill();
-
-            CTX.strokeStyle = `hsl(${this.hue}, 100%, 70%)`;
-            CTX.lineWidth = 2;
-            CTX.beginPath();
-            CTX.moveTo(this.pos.x + this.size / 2, this.pos.y + this.size / 2);
-            CTX.lineTo(this.pos.x + this.size / 2 - this.vel.x * 3, this.pos.y + this.size / 2 - this.vel.y * 3);
-            CTX.stroke();
-        }
-
-        checkCollision(snakeHead) {
-            return helpers.isCollisionCircle(
-                this.pos,
-                snakeHead,
-                this.size / 2,
-                cellSize / 2
-            );
-        }
-    }
-
-    function updateMeteors() {
-        const currentTime = Date.now();
-
-        meteors = meteors.filter(meteor => {
-            meteor.update();
-            if (meteor.checkCollision(snake.pos)) {
-                isGameOver = true;
-            }
-            return !meteor.isOutOfBounds();
-        });
-
-        meteorSpawnTimers.forEach((spawnTime, index) => {
-            if (currentTime - spawnTime >= METEOR_SPAWN_DELAY) {
-                spawnMeteor();
-                meteorSpawnTimers[index] = currentTime;
-            }
-        });
-    }
-
-    function incrementScore() {
-        score++;
-        dom_score.innerText = `Score: ${score.toString().padStart(2, "0")}`;
-
-        if (score % 10 === 0) {
-            snake.speedLevel++;
-        }
-
-        if (score === 3 && meteorSpawnTimers.length === 0) {
-            shouldSpawnMeteors = true;
-            meteorSpawnTimers.push(Date.now());
-        }
-
-        if (score >= 5 && score % 5 === 0) {
-            meteorSpawnTimers.push(Date.now());
-        }
-
-        if (isMusicOn) {
-            let eatSound = new Audio('file:///android_asset/ding.mp3');
-            eatSound.play().catch(e => console.log("Audio play failed:", e));
-        }
-    }
-
-    function particleSplash() {
-        for (let i = 0; i < splashingParticleCount; i++) {
-            let vel = new helpers.Vec(Math.random() * 6 - 3, Math.random() * 6 - 3);
-            let position = new helpers.Vec(food.pos.x, food.pos.y);
-            particles.push(new Particle(position, currentHue, food.size, vel));
-        }
-    }
-
-    function clear() {
-        CTX.clearRect(0, 0, W, H);
-    }
-
-    function initialize() {
-        CTX.imageSmoothingEnabled = false;
-        KEY.listen();
-        cellsCount = cells * cells;
-        cellSize = W / cells;
-        snake = new Snake();
-        food = new Food();
-        dom_startPauseButton.addEventListener("click", toggleStartPause, false);
-        document.getElementById('submitScore').addEventListener('click', submitScore);
-        document.getElementById('closeLeaderboard').addEventListener('click', closeLeaderboard);
-        document.getElementById('musicToggle').addEventListener('click', toggleMusic);
-        for (let i = 0; i < NUM_LIGHTS; i++) {
-            lights.push(new Light());
-        }
-        meteors = [];
-        meteorCount = 0;
-        shouldSpawnMeteors = false;
-        drawInitialState();
-
-        const controlArea = document.getElementById('controlArea');
-        let activeButton = null;
-
-        function getButtonFromPoint(x, y) {
-            const buttons = document.querySelectorAll('.control-btn');
-            const padding = cellSize; // Increase this value to make the touch area larger
-
-            for (let button of buttons) {
-                const rect = button.getBoundingClientRect();
-                if (x >= rect.left - padding && x <= rect.right + padding &&
-                    y >= rect.top - padding && y <= rect.bottom + padding) {
-                    return button;
-                }
-            }
-            return null;
-        }
-
-        function handleTouch(e) {
-            e.preventDefault();
-            if (!isGameStarted || isPaused) return;
-
-            const touch = e.touches[0];
-            const button = getButtonFromPoint(touch.clientX, touch.clientY);
-
-            if (button && button !== activeButton) {
-                if (activeButton) {
-                    activeButton.classList.remove('active');
-                }
-                activeButton = button;
-                activeButton.classList.add('active');
-                KEY.setLastPressed(button.dataset.direction);
-            } else if (!button && activeButton) {
-                activeButton.classList.remove('active');
-                activeButton = null;
-                KEY.resetState();
+            this.tongueTimer++;
+            if (this.tongueTimer > this.tongueInterval) {
+                this.tongueOut = !this.tongueOut;
+                this.tongueTimer = 0;
             }
         }
+        this.draw();
+    }
+}
 
-        controlArea.addEventListener('touchstart', handleTouch, { passive: false });
-        controlArea.addEventListener('touchmove', handleTouch, { passive: false });
+class Food {
+    constructor() {
+        this.pos = new helpers.Vec(
+            ~~(Math.random() * cells) * cellSize,
+            ~~(Math.random() * cells) * cellSize
+        );
+        this.color = currentHue = `hsl(${~~(Math.random() * 360)}, 100%, 50%)`;
+        this.size = cellSize;
+    }
+    draw() {
+        let { x, y } = this.pos;
+        CTX.save();
+        CTX.shadowColor = this.color;
+        CTX.shadowBlur = 10;
+        CTX.fillStyle = this.color;
+        CTX.beginPath();
+        CTX.arc(x + this.size / 2, y + this.size / 2, this.size / 2 - 1, 0, 2 * Math.PI);
+        CTX.fill();
 
-        controlArea.addEventListener('touchend', function(e) {
-            e.preventDefault();
+        CTX.shadowBlur = 0;
+        CTX.fillStyle = "brown";
+        CTX.fillRect(x + this.size / 2 - 1, y + 2, 2, 5);
+
+        CTX.fillStyle = "green";
+        CTX.beginPath();
+        CTX.ellipse(x + this.size / 2 + 4, y + 4, 4, 3, Math.PI / 4, 0, 2 * Math.PI);
+        CTX.fill();
+
+        CTX.restore();
+    }
+    spawn() {
+        let randX = Math.floor(Math.random() * cells) * cellSize;
+        let randY = Math.floor(Math.random() * cells) * cellSize;
+
+        // Ensure food doesn't spawn outside the playable area
+        randX = Math.min(randX, W - cellSize);
+        randY = Math.min(randY, H - cellSize);
+
+        for (let path of snake.history) {
+            if (helpers.isCollision(new helpers.Vec(randX, randY), path)) {
+                return this.spawn();
+            }
+        }
+        this.color = currentHue = `hsl(${helpers.randHue()}, 100%, 50%)`;
+        this.pos = new helpers.Vec(randX, randY);
+    }
+}
+
+class Particle {
+    constructor(pos, color, size, vel) {
+        this.pos = pos;
+        this.color = color;
+        this.size = Math.abs(size / 2);
+        this.ttl = 0;
+        this.gravity = -0.1;
+        this.vel = vel;
+    }
+    draw() {
+        let { x, y } = this.pos;
+        CTX.globalAlpha = 1 - (this.ttl / 50);
+        CTX.fillStyle = this.color;
+        CTX.globalCompositeOperation = "source-over";
+        CTX.beginPath();
+        CTX.arc(x, y, this.size, 0, 2 * Math.PI);
+        CTX.fill();
+        CTX.globalAlpha = 1;
+    }
+    update() {
+        this.draw();
+        this.size -= 0.2;
+        this.ttl += 1;
+        this.pos.add(this.vel);
+        this.vel.y -= this.gravity;
+    }
+}
+
+class Light {
+    constructor() {
+        this.pos = new helpers.Vec(Math.random() * W, Math.random() * H);
+        this.vel = new helpers.Vec((Math.random() - 0.5) * 2, (Math.random() - 0.5) * 2);
+        this.radius = Math.random() * 2 + 1;
+        this.hue = Math.random() * 360;
+    }
+
+    update() {
+        this.pos.add(this.vel);
+        if (this.pos.x < 0 || this.pos.x > W) this.vel.x *= -1;
+        if (this.pos.y < 0 || this.pos.y > H) this.vel.y *= -1;
+    }
+
+    draw() {
+        CTX.beginPath();
+        let gradient = CTX.createRadialGradient(this.pos.x, this.pos.y, 0, this.pos.x, this.pos.y, this.radius * 5);
+        gradient.addColorStop(0, `hsla(${this.hue}, 100%, 50%, 0.3)`);
+        gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
+        CTX.fillStyle = gradient;
+        CTX.arc(this.pos.x, this.pos.y, this.radius * 5, 0, Math.PI * 2);
+        CTX.fill();
+    }
+}
+
+class Meteor {
+    constructor() {
+        this.size = cellSize;
+        this.reset();
+    }
+
+    isOutOfBounds() {
+        return this.pos.x < -this.size || this.pos.x > W + this.size ||
+               this.pos.y < -this.size || this.pos.y > H + this.size;
+    }
+
+    reset() {
+        const side = Math.floor(Math.random() * 4);
+        switch(side) {
+            case 0: // Top
+                this.pos = new helpers.Vec(Math.random() * W, 0);
+                this.vel = new helpers.Vec((Math.random() - 0.5) * 4, Math.random() * 2 + 1);
+                break;
+            case 1: // Right
+                this.pos = new helpers.Vec(W, Math.random() * H);
+                this.vel = new helpers.Vec(-(Math.random() * 2 + 1), (Math.random() - 0.5) * 4);
+                break;
+            case 2: // Bottom
+                this.pos = new helpers.Vec(Math.random() * W, H);
+                this.vel = new helpers.Vec((Math.random() - 0.5) * 4, -(Math.random() * 2 + 1));
+                break;
+            case 3: // Left
+                this.pos = new helpers.Vec(0, Math.random() * H);
+                this.vel = new helpers.Vec(Math.random() * 2 + 1, (Math.random() - 0.5) * 4);
+                break;
+        }
+        this.hue = Math.random() * 360;
+    }
+
+    update() {
+        this.pos.add(this.vel);
+    }
+
+    draw() {
+        CTX.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+        CTX.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+        CTX.shadowBlur = 10;
+        CTX.beginPath();
+        CTX.arc(this.pos.x + this.size / 2, this.pos.y + this.size / 2, this.size / 2, 0, 2 * Math.PI);
+        CTX.fill();
+
+        CTX.strokeStyle = `hsl(${this.hue}, 100%, 70%)`;
+        CTX.lineWidth = 2;
+        CTX.beginPath();
+        CTX.moveTo(this.pos.x + this.size / 2, this.pos.y + this.size / 2);
+        CTX.lineTo(this.pos.x + this.size / 2 - this.vel.x * 3, this.pos.y + this.size / 2 - this.vel.y * 3);
+        CTX.stroke();
+    }
+
+    checkCollision(snakeHead) {
+        return helpers.isCollisionCircle(
+            this.pos,
+            snakeHead,
+            this.size / 2,
+            cellSize / 2
+        );
+    }
+}
+
+function updateMeteors() {
+    const currentTime = Date.now();
+
+    meteors = meteors.filter(meteor => {
+        meteor.update();
+        if (meteor.checkCollision(snake.pos)) {
+            isGameOver = true;
+        }
+        return !meteor.isOutOfBounds();
+    });
+
+    meteorSpawnTimers.forEach((spawnTime, index) => {
+        if (currentTime - spawnTime >= METEOR_SPAWN_DELAY) {
+            spawnMeteor();
+            meteorSpawnTimers[index] = currentTime;
+        }
+    });
+}
+
+function incrementScore() {
+    score++;
+    dom_score.innerText = `Score: ${score.toString().padStart(2, "0")}`;
+
+    if (score % 10 === 0) {
+        snake.speedLevel++;
+    }
+
+    if (score === 3 && meteorSpawnTimers.length === 0) {
+        shouldSpawnMeteors = true;
+        meteorSpawnTimers.push(Date.now());
+    }
+
+    if (score >= 5 && score % 5 === 0) {
+        meteorSpawnTimers.push(Date.now());
+    }
+
+    if (isMusicOn) {
+        let eatSound = new Audio('file:///android_asset/ding.mp3');
+        eatSound.play().catch(e => console.log("Audio play failed:", e));
+    }
+}
+
+function particleSplash() {
+    for (let i = 0; i < splashingParticleCount; i++) {
+        let vel = new helpers.Vec(Math.random() * 6 - 3, Math.random() * 6 - 3);
+        let position = new helpers.Vec(food.pos.x, food.pos.y);
+        particles.push(new Particle(position, currentHue, food.size, vel));
+    }
+}
+
+function clear() {
+    CTX.clearRect(0, 0, W, H);
+}
+
+function initialize() {
+    CTX.imageSmoothingEnabled = false;
+    KEY.listen();
+    cellsCount = cells * cells;
+    cellSize = W / cells;
+    snake = new Snake();
+    food = new Food();
+    dom_startPauseButton.addEventListener("click", toggleStartPause, false);
+    document.getElementById('submitScore').addEventListener('click', submitScore);
+    document.getElementById('closeLeaderboard').addEventListener('click', closeLeaderboard);
+    document.getElementById('musicToggle').addEventListener('click', toggleMusic);
+    for (let i = 0; i < NUM_LIGHTS; i++) {
+        lights.push(new Light());
+    }
+    meteors = [];
+    meteorCount = 0;
+    shouldSpawnMeteors = false;
+    drawInitialState();
+
+    const controlArea = document.getElementById('controlArea');
+    let activeButton = null;
+
+    function getButtonFromPoint(x, y) {
+        const buttons = document.querySelectorAll('.control-btn');
+        const padding = cellSize; // Increase this value to make the touch area larger
+
+        for (let button of buttons) {
+            const rect = button.getBoundingClientRect();
+            if (x >= rect.left - padding && x <= rect.right + padding &&
+                y >= rect.top - padding && y <= rect.bottom + padding) {
+                return button;
+            }
+        }
+        return null;
+    }
+
+    function handleTouch(e) {
+        e.preventDefault();
+        if (!isGameStarted || isPaused) return;
+
+        const touch = e.touches[0];
+        const button = getButtonFromPoint(touch.clientX, touch.clientY);
+
+        if (button && button !== activeButton) {
             if (activeButton) {
                 activeButton.classList.remove('active');
             }
+            activeButton = button;
+            activeButton.classList.add('active');
+            KEY.setLastPressed(button.dataset.direction);
+        } else if (!button && activeButton) {
+            activeButton.classList.remove('active');
             activeButton = null;
             KEY.resetState();
-        }, { passive: false });
-
-        document.addEventListener('keydown', function(e) {
-            if (!isGameStarted || isPaused) return;
-            switch(e.key) {
-                case 'ArrowUp':
-                case 'ArrowDown':
-                case 'ArrowLeft':
-                case 'ArrowRight':
-                    KEY.setLastPressed(e.key);
-                    break;
-            }
-        });
-
-        document.addEventListener('keyup', function(e) {
-            if (e.key === KEY.lastPressed) {
-                KEY.setLastPressed(null);
-            }
-        });
-    }
-
-    function toggleStartPause() {
-        if (!isGameStarted) {
-            startGame();
-        } else {
-            togglePause();
         }
     }
 
-    function startGame() {
-        isGameStarted = true;
-        isPaused = false;
+    controlArea.addEventListener('touchstart', handleTouch, { passive: false });
+    controlArea.addEventListener('touchmove', handleTouch, { passive: false });
+
+    controlArea.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        if (activeButton) {
+            activeButton.classList.remove('active');
+        }
+        activeButton = null;
+        KEY.resetState();
+    }, { passive: false });
+
+    document.addEventListener('keydown', function(e) {
+        if (!isGameStarted || isPaused) return;
+        switch(e.key) {
+            case 'ArrowUp':
+            case 'ArrowDown':
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                KEY.setLastPressed(e.key);
+                break;
+        }
+    });
+
+    document.addEventListener('keyup', function(e) {
+        if (e.key === KEY.lastPressed) {
+            KEY.setLastPressed(null);
+        }
+    });
+}
+
+function toggleStartPause() {
+    if (!isGameStarted) {
+        startGame();
+    } else {
+        togglePause();
+    }
+}
+
+function startGame() {
+    isGameStarted = true;
+    isPaused = false;
+    dom_startPauseButton.innerHTML = 'Pause';
+    reset();
+    startBackgroundMusic();
+    startTimer();
+    loop();
+}
+
+function togglePause() {
+    isPaused = !isPaused;
+    if (isPaused) {
+        dom_startPauseButton.innerHTML = 'Resume';
+        stopBackgroundMusic();
+        pauseTimer();
+    } else {
         dom_startPauseButton.innerHTML = 'Pause';
-        reset();
         startBackgroundMusic();
-        startTimer();
+        resumeTimer();
         loop();
     }
+}
 
-    function togglePause() {
-        isPaused = !isPaused;
-        if (isPaused) {
-            dom_startPauseButton.innerHTML = 'Resume';
-            stopBackgroundMusic();
-            pauseTimer();
-        } else {
-            dom_startPauseButton.innerHTML = 'Pause';
-            startBackgroundMusic();
-            resumeTimer();
-            loop();
-        }
+function drawInitialState() {
+    clear();
+    helpers.drawGrid();
+    snake.draw();
+    food.draw();
+    for (let light of lights) {
+        light.draw();
     }
+}
 
-    function drawInitialState() {
-        clear();
+function spawnMeteor() {
+    meteors.push(new Meteor());
+}
+
+function updateMeteorCount() {
+    if (score >= 9) {
+        meteorCount = Math.floor((score - 9) / 9) * 2 + 1;
+    } else {
+        meteorCount = 0;
+    }
+}
+
+function drawMeteors() {
+    meteors.forEach(meteor => meteor.draw());
+}
+
+function loop() {
+    clear();
+    if (!isGameOver && !isPaused) {
+        requestID = setTimeout(loop, 1000 / 60);
         helpers.drawGrid();
-        snake.draw();
-        food.draw();
         for (let light of lights) {
+            light.update();
             light.draw();
         }
-    }
-
-    function spawnMeteor() {
-        meteors.push(new Meteor());
-    }
-
-    function updateMeteorCount() {
-        if (score >= 9) {
-            meteorCount = Math.floor((score - 9) / 9) * 2 + 1;
-        } else {
-            meteorCount = 0;
+        food.draw();
+        for (let p of particles) {
+            p.update();
         }
-    }
-
-    function drawMeteors() {
-        meteors.forEach(meteor => meteor.draw());
-    }
-
-    function loop() {
+        snake.update();
+        if (shouldSpawnMeteors) {
+            updateMeteors();
+            drawMeteors();
+        }
+        particles = particles.filter(p => p.size > 0.1);
+    } else if (isGameOver) {
         clear();
-        if (!isGameOver && !isPaused) {
-            requestID = setTimeout(loop, 1000 / 60);
-            helpers.drawGrid();
-            for (let light of lights) {
-                light.update();
-                light.draw();
-            }
-            food.draw();
-            for (let p of particles) {
-                p.update();
-            }
-            snake.update();
-            if (shouldSpawnMeteors) {
-                updateMeteors();
-                drawMeteors();
-            }
-            particles = particles.filter(p => p.size > 0.1);
-        } else if (isGameOver) {
-            clear();
-            gameOver();
-        }
+        gameOver();
     }
+}
 
-    let backgroundMusic = new Audio('file:///android_asset/background_music.mp3');
-    backgroundMusic.loop = true;
-    let isMusicOn = true;
+let backgroundMusic = new Audio('file:///android_asset/background_music.mp3');
+backgroundMusic.loop = true;
+let isMusicOn = true;
 
-    function toggleMusic() {
-        isMusicOn = !isMusicOn;
-        if (isMusicOn) {
-            startBackgroundMusic();
-            document.getElementById('musicToggle').textContent = '🔊';
-        } else {
-            stopBackgroundMusic();
-            document.getElementById('musicToggle').textContent = '🔇';
-        }
-    }
-
-    function startBackgroundMusic() {
-        if (isMusicOn && isGameStarted && !isPaused) {
-            backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
-        }
-    }
-
-    function stopBackgroundMusic() {
-        backgroundMusic.pause();
-    }
-
-    let leaderboard = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
-
-    function showGameOver() {
-        document.getElementById('gameOver').style.display = 'block';
-        document.getElementById('finalScore').textContent = score;
-        document.getElementById('finalTime').textContent = formatTime(elapsedTime);
-    }
-
-    function submitScore() {
-        let playerName = document.getElementById('playerName').value.trim() || 'Anonymous';
-        playerName = playerName.substring(0, 20);
-        leaderboard.push({name: playerName, score: score, time: elapsedTime});
-        leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
-        leaderboard = leaderboard.slice(0, 10);
-        localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
-        showLeaderboard();
-    }
-
-    function showLeaderboard() {
-        let leaderboardList = document.getElementById('leaderboardList');
-        leaderboardList.innerHTML = '';
-        leaderboard.forEach((entry, index) => {
-            let row = document.createElement('div');
-            row.className = 'leaderboard-row';
-
-            row.innerHTML =
-                '<div class="leaderboard-cell">' + (index + 1) + '.</div>' +
-                '<div class="leaderboard-cell">' + entry.name + '</div>' +
-                '<div class="leaderboard-cell">' + entry.score + '</div>' +
-                '<div class="leaderboard-cell">' + formatTime(entry.time) + '</div>';
-            leaderboardList.appendChild(row);
-        });
-        document.getElementById('gameOver').style.display = 'none';
-        document.getElementById('leaderboard').style.display = 'block';
-    }
-
-    function closeLeaderboard() {
-        document.getElementById('leaderboard').style.display = 'none';
-        reset();
-        drawInitialState();
-        dom_startPauseButton.innerHTML = 'Start';
-    }
-
-    function reset() {
-        score = 0;
-        dom_score.innerText = `Score: 00`;
-        snake = new Snake();
-        food.spawn();
-        KEY.resetState();
-        isGameOver = false;
-        clearTimeout(requestID);
-        resetTimer();
-        lights = [];
-        for (let i = 0; i < NUM_LIGHTS; i++) {
-            lights.push(new Light());
-        }
-        snake.speedLevel = 0;
-        meteors = [];
-        meteorSpawnTimers = [];
-        shouldSpawnMeteors = false;
-    }
-
-    function gameOver() {
-        maxScore ? null : (maxScore = score);
-        score > maxScore ? (maxScore = score) : null;
-        window.localStorage.setItem("maxScore", maxScore);
+function toggleMusic() {
+    isMusicOn = !isMusicOn;
+    if (isMusicOn) {
+        startBackgroundMusic();
+        document.getElementById('musicToggle').textContent = '🔊';
+    } else {
         stopBackgroundMusic();
-        stopTimer();
-        isGameStarted = false;
-        dom_startPauseButton.innerHTML = 'Start';
-        showGameOver();
+        document.getElementById('musicToggle').textContent = '🔇';
     }
+}
 
-    function startTimer() {
-        startTime = Date.now() - elapsedTime;
-        timerInterval = setInterval(updateTimer, 1000);
+function startBackgroundMusic() {
+    if (isMusicOn && isGameStarted && !isPaused) {
+        backgroundMusic.play().catch(e => console.log("Audio play failed:", e));
     }
+}
 
-    function pauseTimer() {
-        clearInterval(timerInterval);
-    }
+function stopBackgroundMusic() {
+    backgroundMusic.pause();
+}
 
-    function resumeTimer() {
-        startTime = Date.now() - elapsedTime;
-        timerInterval = setInterval(updateTimer, 1000);
-    }
+let leaderboard = JSON.parse(localStorage.getItem('snakeLeaderboard')) || [];
+function showGameOver() {
+    document.getElementById('gameOver').style.display = 'block';
+    document.getElementById('finalScore').textContent = score;
+    document.getElementById('finalTime').textContent = formatTime(elapsedTime);
+}
 
-    function stopTimer() {
-        clearInterval(timerInterval);
-    }
+function submitScore() {
+    let playerName = document.getElementById('playerName').value.trim() || 'Anonymous';
+    playerName = playerName.substring(0, 20);
+    leaderboard.push({name: playerName, score: score, time: elapsedTime});
+    leaderboard.sort((a, b) => b.score - a.score || a.time - b.time);
+    leaderboard = leaderboard.slice(0, 10);
+    localStorage.setItem('snakeLeaderboard', JSON.stringify(leaderboard));
+    showLeaderboard();
+}
 
-    function resetTimer() {
-        clearInterval(timerInterval);
-        elapsedTime = 0;
-        updateTimerDisplay();
-    }
+function showLeaderboard() {
+    let leaderboardList = document.getElementById('leaderboardList');
+    leaderboardList.innerHTML = '';
+    leaderboard.forEach((entry, index) => {
+        let row = document.createElement('div');
+        row.className = 'leaderboard-row';
 
-    function updateTimer() {
-        elapsedTime = Date.now() - startTime;
-        updateTimerDisplay();
-    }
-
-    function updateTimerDisplay() {
-        dom_timer.textContent = formatTime(elapsedTime);
-    }
-
-    function formatTime(ms) {
-        let seconds = Math.floor(ms / 1000);
-        let minutes = Math.floor(seconds / 60);
-        seconds = seconds % 60;
-        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-
-
-    function createSparkles() {
-        const sparkleContainer = document.createElement('div');
-        sparkleContainer.className = 'sparkle-container';
-        sparkleContainer.style.position = 'fixed';
-        sparkleContainer.style.top = '0';
-        sparkleContainer.style.left = '0';
-        sparkleContainer.style.width = '100%';
-        sparkleContainer.style.height = '100%';
-        sparkleContainer.style.overflow = 'hidden';
-        sparkleContainer.style.pointerEvents = 'none';
-        sparkleContainer.style.zIndex = '0';
-        document.body.appendChild(sparkleContainer);
-
-        const sparkleCount = 25;  // Adjust this number for more or fewer sparkles
-
-        for (let i = 0; i < sparkleCount; i++) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.style.left = `${Math.random() * 100}%`;
-            sparkle.style.top = `${Math.random() * 100}%`;
-            sparkle.style.animationDelay = `${Math.random() * 2}s`;
-            sparkleContainer.appendChild(sparkle);
-        }
-    }
-
-    function resizeCanvas() {
-        const canvas = document.querySelector('canvas');
-        const container = document.getElementById('canvas');
-        const containerWidth = container.clientWidth;
-        const containerHeight = container.clientHeight;
-
-        cellSize = Math.floor(Math.min(containerWidth, containerHeight) / cells);
-
-        W = canvas.width = cells * cellSize;
-        H = canvas.height = cells * cellSize;
-
-        // Reinitialize game objects if necessary
-        if (snake) {
-            snake.size = cellSize;
-            snake.pos = new helpers.Vec(Math.floor(W / 2 / cellSize) * cellSize, Math.floor(H / 2 / cellSize) * cellSize);
-            snake.history = [new helpers.Vec(snake.pos.x, snake.pos.y)];
-        }
-        if (food) {
-            food.size = cellSize;
-            food.spawn();
-        }
-
-        // Reinitialize lights
-        lights = [];
-        for (let i = 0; i < NUM_LIGHTS; i++) {
-            lights.push(new Light());
-        }
-    }
-
-    // Call resizeCanvas on window resize
-    window.addEventListener('resize', resizeCanvas);
-
-    // Call resizeCanvas and createSparkles on initial load
-    window.addEventListener('load', () => {
-        resizeCanvas();
-        initialize();
-        createSparkles();
+        row.innerHTML =
+            '<div class="leaderboard-cell">' + (index + 1) + '.</div>' +
+            '<div class="leaderboard-cell">' + entry.name + '</div>' +
+            '<div class="leaderboard-cell">' + entry.score + '</div>' +
+            '<div class="leaderboard-cell">' + formatTime(entry.time) + '</div>';
+        leaderboardList.appendChild(row);
     });
+    document.getElementById('gameOver').style.display = 'none';
+    document.getElementById('leaderboard').style.display = 'block';
+}
+
+function closeLeaderboard() {
+    document.getElementById('leaderboard').style.display = 'none';
+    reset();
+    drawInitialState();
+    dom_startPauseButton.innerHTML = 'Start';
+}
+
+function reset() {
+    score = 0;
+    dom_score.innerText = `Score: 00`;
+    snake = new Snake();
+    food.spawn();
+    KEY.resetState();
+    isGameOver = false;
+    clearTimeout(requestID);
+    resetTimer();
+    lights = [];
+    for (let i = 0; i < NUM_LIGHTS; i++) {
+        lights.push(new Light());
+    }
+    snake.speedLevel = 0;
+    meteors = [];
+    meteorSpawnTimers = [];
+    shouldSpawnMeteors = false;
+}
+
+function gameOver() {
+    maxScore ? null : (maxScore = score);
+    score > maxScore ? (maxScore = score) : null;
+    window.localStorage.setItem("maxScore", maxScore);
+    stopBackgroundMusic();
+    stopTimer();
+    isGameStarted = false;
+    dom_startPauseButton.innerHTML = 'Start';
+    showGameOver();
+}
+
+function startTimer() {
+    startTime = Date.now() - elapsedTime;
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function pauseTimer() {
+    clearInterval(timerInterval);
+}
+
+function resumeTimer() {
+    startTime = Date.now() - elapsedTime;
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+function resetTimer() {
+    clearInterval(timerInterval);
+    elapsedTime = 0;
+    updateTimerDisplay();
+}
+
+function updateTimer() {
+    elapsedTime = Date.now() - startTime;
+    updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+    dom_timer.textContent = formatTime(elapsedTime);
+}
+
+function formatTime(ms) {
+    let seconds = Math.floor(ms / 1000);
+    let minutes = Math.floor(seconds / 60);
+    seconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function createSparkles() {
+    const sparkleContainer = document.createElement('div');
+    sparkleContainer.className = 'sparkle-container';
+    sparkleContainer.style.position = 'fixed';
+    sparkleContainer.style.top = '0';
+    sparkleContainer.style.left = '0';
+    sparkleContainer.style.width = '100%';
+    sparkleContainer.style.height = '100%';
+    sparkleContainer.style.overflow = 'hidden';
+    sparkleContainer.style.pointerEvents = 'none';
+    sparkleContainer.style.zIndex = '0';
+    document.body.appendChild(sparkleContainer);
+
+    const sparkleCount = 25;  // Adjust this number for more or fewer sparkles
+
+    for (let i = 0; i < sparkleCount; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = `${Math.random() * 100}%`;
+        sparkle.style.top = `${Math.random() * 100}%`;
+        sparkle.style.animationDelay = `${Math.random() * 2}s`;
+        sparkleContainer.appendChild(sparkle);
+    }
+}
+
+function resizeCanvas() {
+    const canvas = document.querySelector('canvas');
+    const container = document.getElementById('canvas');
+    const containerWidth = container.clientWidth;
+    const containerHeight = container.clientHeight;
+
+    cellSize = Math.floor(Math.min(containerWidth, containerHeight) / cells);
+
+    W = canvas.width = cells * cellSize;
+    H = canvas.height = cells * cellSize;
+
+    // Reinitialize game objects if necessary
+    if (snake) {
+        snake.size = cellSize;
+        snake.pos = new helpers.Vec(Math.floor(W / 2 / cellSize) * cellSize, Math.floor(H / 2 / cellSize) * cellSize);
+        snake.history = [new helpers.Vec(snake.pos.x, snake.pos.y)];
+    }
+    if (food) {
+        food.size = cellSize;
+        food.spawn();
+    }
+
+    // Reinitialize lights
+    lights = [];
+    for (let i = 0; i < NUM_LIGHTS; i++) {
+        lights.push(new Light());
+    }
+}
+
+function detectDevice() {
+    const ua = navigator.userAgent;
+    if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+        return "tablet";
+    }
+    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+        return "mobile";
+    }
+    return "desktop";
+}
+
+// Add this function to your existing <script> section
+function makeDraggable(element) {
+    let isDragging = false;
+    let startX, startY, startLeft, startTop;
+
+    const handle = document.createElement('div');
+    handle.className = 'controller-handle';
+    element.appendChild(handle);
+
+    handle.addEventListener('mousedown', startDrag);
+    handle.addEventListener('touchstart', startDrag);
+
+    document.addEventListener('mousemove', drag);
+    document.addEventListener('touchmove', drag);
+
+    document.addEventListener('mouseup', stopDrag);
+    document.addEventListener('touchend', stopDrag);
+
+    function startDrag(e) {
+        isDragging = true;
+        if (e.type === 'touchstart') {
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        } else {
+            startX = e.clientX;
+            startY = e.clientY;
+        }
+        startLeft = element.offsetLeft;
+        startTop = element.offsetTop;
+        e.preventDefault();
+    }
+
+    function drag(e) {
+        if (!isDragging) return;
+        let clientX, clientY;
+        if (e.type === 'touchmove') {
+            clientX = e.touches[0].clientX;
+            clientY = e.touches[0].clientY;
+        } else {
+            clientX = e.clientX;
+            clientY = e.clientY;
+        }
+        let deltaX = clientX - startX;
+        let deltaY = clientY - startY;
+
+        let newLeft = startLeft + deltaX;
+        let newTop = startTop + deltaY;
+
+        // Ensure the controller stays within the screen boundaries
+        newLeft = Math.max(0, Math.min(newLeft, window.innerWidth - element.offsetWidth));
+        newTop = Math.max(0, Math.min(newTop, window.innerHeight - element.offsetHeight));
+
+        element.style.left = `${newLeft}px`;
+        element.style.top = `${newTop}px`;
+        element.style.bottom = 'auto';
+        element.style.transform = 'none';
+        e.preventDefault();
+    }
+
+    function stopDrag() {
+        isDragging = false;
+    }
+}
+
+
+// Modify the applyDeviceSpecificStyles function
+function applyDeviceSpecificStyles() {
+    const deviceType = detectDevice();
+    const controller = document.querySelector('.controller');
+
+    if (deviceType === "tablet") {
+        controller.style.width = "30vmin";
+        controller.style.height = "30vmin";
+    } else if (deviceType === "mobile") {
+        controller.style.width = "40vmin";
+        controller.style.height = "40vmin";
+    } else {
+        // Reset to default styles for desktop
+        controller.style.width = "40vmin";
+        controller.style.height = "40vmin";
+    }
+
+    // Make the controller draggable
+    makeDraggable(controller);
+}
+
+// Call resizeCanvas and applyDeviceSpecificStyles on window resize
+window.addEventListener('resize', () => {
+    resizeCanvas();
+    applyDeviceSpecificStyles();
+});
+
+// Call resizeCanvas, initialize, createSparkles, and applyDeviceSpecificStyles on initial load
+window.addEventListener('load', () => {
+    resizeCanvas();
+    initialize();
+    createSparkles();
+    applyDeviceSpecificStyles();
+});
 </script>
 </body>
 </html>

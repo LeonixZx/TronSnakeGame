@@ -1307,6 +1307,12 @@ function reset() {
     shouldSpawnMeteors = false;
 }
 
+function notifyGameOver() {
+    if (window.Android) {
+        window.Android.onGameOver();
+    }
+}
+
 function gameOver() {
     maxScore ? null : (maxScore = score);
     score > maxScore ? (maxScore = score) : null;
@@ -1315,6 +1321,7 @@ function gameOver() {
     stopTimer();
     isGameStarted = false;
     dom_startPauseButton.innerHTML = 'Start';
+    notifyGameOver(); // Add this line
     showGameOver();
 }
 

@@ -6,26 +6,38 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.webkit.ConsoleMessage;
+import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.ads.appopen.AppOpenAd;
-import com.google.android.gms.ads.AdRequest;
 
 public class MainActivity extends AppCompatActivity {
     private WebView webView;
-    private static final String TAG = "TronSnakeGame";
-
+    private InterstitialAd mInterstitialAd;
     private AppOpenAd appOpenAd = null;
     private boolean isShowingAd = false;
-    private static final String AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294"; // Replace with your actual Ad Unit ID
+
+    private static final String TAG = "TronSnakeGame";
+    private static final String APP_OPEN_AD_UNIT_ID = "ca-app-pub-3940256099942544/3419835294";
+    private static final String INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-3940256099942544/1033173712";
+    private static final String BANNER_AD_UNIT_ID = "ca-app-pub-3940256099942544/6300978111";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +47,14 @@ public class MainActivity extends AppCompatActivity {
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {
-                loadAd();
+                loadAppOpenAd();
+                loadInterstitialAd();
             }
         });
 
         webView = findViewById(R.id.webView);
         setupWebView();
+        setupBannerAd();
     }
 
     private void setupWebView() {
@@ -66,63 +80,133 @@ public class MainActivity extends AppCompatActivity {
         webView.getSettings().setAllowContentAccess(true);
         webView.getSettings().setDomStorageEnabled(true);
 
+        webView.addJavascriptInterface(new WebAppInterface(), "Android");
+
         webView.loadUrl("file:///android_asset/snake_game.html");
     }
 
-    public void loadAd() {
-        AppOpenAd.load(this, AD_UNIT_ID, new AdRequest.Builder().build(),
+    private void loadAppOpenAd() {
+        AdRequest request = new AdRequest.Builder().build();
+        AppOpenAd.load(this, APP_OPEN_AD_UNIT_ID, request,
                 AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT,
                 new AppOpenAd.AppOpenAdLoadCallback() {
                     @Override
-                    public void onAdLoaded(AppOpenAd ad) {
+                    public void onAdLoaded(@NonNull AppOpenAd ad) {
                         appOpenAd = ad;
+                        Log.d(TAG, "App Open Ad loaded successfully");
                     }
 
                     @Override
-                    public void onAdFailedToLoad(LoadAdError loadAdError) {
-                        // Handle the error
-                        Log.d(TAG, "Ad failed to load: " + loadAdError.getMessage());
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.e(TAG, "App Open Ad failed to load: " + loadAdError.getMessage());
                     }
                 });
     }
 
-    public void showAdIfAvailable() {
-        if (!isShowingAd && isAdAvailable()) {
-            FullScreenContentCallback fullScreenContentCallback =
-                    new FullScreenContentCallback() {
-                        @Override
-                        public void onAdDismissedFullScreenContent() {
-                            appOpenAd = null;
-                            isShowingAd = false;
-                            loadAd();
-                        }
+    private void showAppOpenAd() {
+        if (!isShowingAd && appOpenAd != null) {
+            FullScreenContentCallback fullScreenContentCallback = new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    appOpenAd = null;
+                    isShowingAd = false;
+                    loadAppOpenAd();
+                }
 
-                        @Override
-                        public void onAdFailedToShowFullScreenContent(AdError adError) {
-                            Log.d(TAG, "Ad failed to show: " + adError.getMessage());
-                        }
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    Log.e(TAG, "App Open Ad failed to show: " + adError.getMessage());
+                }
 
-                        @Override
-                        public void onAdShowedFullScreenContent() {
-                            isShowingAd = true;
-                        }
-                    };
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    isShowingAd = true;
+                }
+            };
 
             appOpenAd.setFullScreenContentCallback(fullScreenContentCallback);
             appOpenAd.show(this);
         } else {
-            loadAd();
+            loadAppOpenAd();
         }
     }
 
-    private boolean isAdAvailable() {
-        return appOpenAd != null;
+    private void loadInterstitialAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        InterstitialAd.load(this, INTERSTITIAL_AD_UNIT_ID, adRequest,
+                new InterstitialAdLoadCallback() {
+                    @Override
+                    public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                        mInterstitialAd = interstitialAd;
+                        Log.d(TAG, "Interstitial ad loaded successfully");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                        Log.d(TAG, "Interstitial ad failed to load: " + loadAdError.getMessage());
+                        mInterstitialAd = null;
+                    }
+                });
+    }
+
+    private void showInterstitialAd() {
+        if (mInterstitialAd != null) {
+            mInterstitialAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    Log.d(TAG, "Interstitial ad was dismissed");
+                    mInterstitialAd = null;
+                    loadInterstitialAd(); // Load the next interstitial ad
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    Log.d(TAG, "Interstitial ad failed to show: " + adError.getMessage());
+                    mInterstitialAd = null;
+                }
+
+                @Override
+                public void onAdShowedFullScreenContent() {
+                    Log.d(TAG, "Interstitial ad was shown");
+                }
+            });
+            mInterstitialAd.show(this);
+        } else {
+            Log.d(TAG, "The interstitial ad wasn't ready yet.");
+            loadInterstitialAd(); // Try to load it for next time
+        }
+    }
+
+    private void setupBannerAd() {
+        AdView adView = new AdView(this);
+        adView.setAdUnitId(BANNER_AD_UNIT_ID);
+        adView.setAdSize(AdSize.BANNER);
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+        adView.loadAd(adRequest);
+
+        FrameLayout adViewContainer = findViewById(R.id.adViewContainer);
+        adViewContainer.addView(adView);
+    }
+
+    private class WebAppInterface {
+        @JavascriptInterface
+        public void onGameOver() {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    showInterstitialAd();
+                }
+            });
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        showAdIfAvailable();
+        if (!isShowingAd) {
+            showAppOpenAd();
+        }
     }
 
     @Override
